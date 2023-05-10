@@ -6,10 +6,7 @@ import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.stage.Stage;
 
 public class PremierExempleConteneurs extends Application{
@@ -17,7 +14,7 @@ public class PremierExempleConteneurs extends Application{
     public void start(Stage primaryStage) throws Exception {
 
         // Création du conteneur principal
-        VBox vbox = new VBox();
+        BorderPane root = new BorderPane();
 
         //Création du conteneurs de la barre de menu
         MenuBar topMenu = new MenuBar();
@@ -39,20 +36,32 @@ public class PremierExempleConteneurs extends Application{
 
         topMenu.getMenus().addAll(fileMenu, editMenu, helpMenu);
 
-        //Création du milieu de page
-        HBox middleBox = new HBox();
-        HBox.setHgrow(middleBox, Priority.ALWAYS );
+        root.setTop(topMenu);
+
+        //Création de la partie gauche
 
         VBox leftBox = new VBox();
-        VBox.setVgrow( leftBox, Priority.ALWAYS );
+        leftBox.setAlignment(Pos.CENTER);
+        leftBox.setSpacing(10);
+
         Label boutonsLabel = new Label("Boutons :");
+
         Button bouton1 = new Button("Bouton1");
         Button bouton2 = new Button("Bouton2");
         Button bouton3 = new Button("Bouton3");
         leftBox.getChildren().addAll(boutonsLabel, bouton1, bouton2, bouton3);
 
+        //separator entre milieu et centre
+        Separator midSeparator = new Separator(Orientation.VERTICAL);
+        root.setLeft(new HBox(leftBox, midSeparator));
+
+        //Centre de la page et formulaire
         GridPane midPane = new GridPane();
-        GridPane.setVgrow(midPane, Priority.ALWAYS);
+        midPane.setAlignment(Pos.CENTER);
+        midPane.setHgap(10);
+        midPane.setVgap(10);
+        midPane.setPadding(new Insets(10));
+
         Label nameLabel = new Label("Name: ");
         midPane.add(nameLabel, 0, 0);
         TextField nameField = new TextField();
@@ -66,22 +75,26 @@ public class PremierExempleConteneurs extends Application{
         TextField pwField = new TextField();
         midPane.add(pwField, 1, 2);
 
-        Separator midSeparator = new Separator(Orientation.VERTICAL);
-        middleBox.getChildren().addAll(leftBox, midSeparator, midPane);
+        HBox buttonBox = new HBox();
+        buttonBox.setAlignment(Pos.CENTER);
+        buttonBox.setSpacing(10);
 
-        // Ajout des contrôleurs au conteneur principal
-        vbox.getChildren().addAll(
-                topMenu,
-                middleBox
-        );
+        buttonBox.getChildren().addAll(new Button("Submit"), new Button("Cancel"));
+        midPane.add(buttonBox, 0,3, 2, 1);
+
+        root.setCenter(midPane);
+
+        //Bas de la page
+        Label statusLabel = new Label("Ceci est un label de bas de page");
+        VBox bas = new VBox(new Separator(Orientation.HORIZONTAL),statusLabel);
+        bas.setAlignment(Pos.CENTER);
+        root.setBottom(bas);
 
         // Ajout du conteneur à la scene
-        Scene scene = new Scene(vbox );
+        Scene scene = new Scene(root, 600, 400);
 
         // Ajout de la scene à la fenêtre et changement de ses paramètres (dimensions et titre)
         primaryStage.setScene( scene );
-        primaryStage.setWidth( 800 );
-        primaryStage.setHeight( 600 );
         primaryStage.setTitle("Premier exemple manipulant les conteneurs");
 
         // Affichage de la fenêtre
